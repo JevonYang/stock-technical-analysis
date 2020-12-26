@@ -2,24 +2,28 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tushare as ts
 import numpy as np
+from utils import config
 
 if __name__ == '__main__':
-    # df = pd.read_csv("./data/000001.csv", encoding='GBK')
-    code = '600498'  # sh
-    df = ts.get_hist_data(code, start='2010-01-01', ktype='D')
+    code = '600498.SH'  # sh
+    ts.set_token(config.tushare_token())
+
+    df = ts.pro_bar(ts_code=code, adj='qfq',
+                    start_date='20160101', end_date='20201226')
+
+    # df = ts.get_hist_data(code, start='2010-01-01', ktype='D')
     df.to_csv(code + ".csv", index=True, sep=',')
     df = pd.read_csv('./' + code + '.csv', encoding='GBK')
-    # print(df)
-    df['date'] = pd.to_datetime(df['date'])
-    df = df.set_index(df['date'])
-    df = df['2020':'2014']
-    # print(df)
+    df.set_index(pd.to_datetime(df["trade_date"], format='%Y%m%d'), inplace=True)
+    print(df)
+    df = df['2020':'2010']
+    print(df)
     a1 = [np.percentile(df['close'], 10)] * len(df)
     a2 = [np.percentile(df['close'], 90)] * len(df)
 
     x_data = df.index
     y_data = df['close']
-    y2_data = df['volume']
+    y2_data = df['vol']
 
     fig, (ax1, ax2) = plt.subplots(2, 1)
 
