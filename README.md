@@ -6,5 +6,5 @@ A project for Chinese Stock Technical Analysis
 init a database
 
 ```docker
-docker run --name mysql -v /data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7.32
+docker run --name mysql -v /data/mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=123456 -d -p 3306:3306 mysql:5.7.32
 ```
