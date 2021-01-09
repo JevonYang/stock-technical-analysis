@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-
-import tushare as ts
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import tushare as ts
 
 
 def is_positive(num):
@@ -38,10 +34,10 @@ def frequency_for_up_and_down(code):
     list_p_change_down = list_p_change[1::2]
     list_days_up = list_days[::2]
     list_days_down = list_days[1::2]
-    print u'上涨周期涨幅中位数', np.median(list_p_change_up)
-    print u'上涨周期天数中位数', np.median(list_days_up)
-    print u'下跌周期跌幅中位数', np.median(list_p_change_down)
-    print u'下跌周期天数中位数', np.median(list_days_down)
+    print(u'上涨周期涨幅中位数', np.median(list_p_change_up))
+    print(u'上涨周期天数中位数', np.median(list_days_up))
+    print(u'下跌周期跌幅中位数', np.median(list_p_change_down))
+    print(u'下跌周期天数中位数', np.median(list_days_down))
     # hist_up = np.histogram(list_days_up)
     # hist_down = np.histogram(list_days_down)
     # n = np.array(hist_up[0])

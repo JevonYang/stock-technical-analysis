@@ -1,6 +1,12 @@
 # stock-technical-analysis
 A project for Chinese Stock Technical Analysis
 
+## how to use?
+```shell
+pip install -r requirements.txt
+```
+
+
 ## Database
 
 init a database
