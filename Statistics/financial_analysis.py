@@ -35,12 +35,20 @@ def financial_info(stock_code) -> pd.DataFrame:
     return stock_financial_analysis_indicator_df
 
 
-if __name__ == '__main__':
-    print(financial_info(stock_code="300725")[lambda x: x.index.month == 12]['净资产报酬率(%)'].head(5).mean())
-    financial_300725 = financial_info(stock_code="300725")[lambda x: x.index.month == 12]
+def save_financial_reports(classify_index_code):
+    sw_index_df = ak.sw_index_cons(index_code=classify_index_code)
+    for index, stock in sw_index_df.iterrows():
+        financial_info(stock['stock_code']).to_excel('../tmp/financial_reports/' + stock['stock_code'] + '.xlsx')
 
-    financial_300725.plot.bar(use_index=False, y=['净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)'])
-    plt.show()
+
+if __name__ == '__main__':
+    # print(financial_info(stock_code="300725")[lambda x: x.index.month == 12]['净资产报酬率(%)'].head(5).mean())
+    # financial_300725 = financial_info(stock_code="300725")[lambda x: x.index.month == 12]
+    #
+    # financial_300725.plot.bar(use_index=False, y=['净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)'])
+    # plt.show()
+
+    save_financial_reports(classify_index_code="801150")
 
     # import akshare as ak
     # sw_index_df = ak.sw_index_cons(index_code="801150")
