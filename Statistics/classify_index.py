@@ -9,9 +9,10 @@ import pandas as pd
 
 
 def get_classify_index(
-    start="2017-12-31", 
-    end=datetime.datetime.now().strftime("%Y-%m-%d"), 
-    freq="Week") -> pd.DataFrame:
+        start="2017-12-31",
+        end=datetime.datetime.now().strftime("%Y-%m-%d"),
+        freq="Week"
+) -> pd.DataFrame:
     sw_index_spot_df = ak.sw_index_spot()
     result_index = pd.DataFrame()
     for code in sw_index_spot_df['指数代码']:
