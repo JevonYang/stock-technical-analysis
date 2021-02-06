@@ -3,6 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pandas.tseries.offsets import YearEnd
 import threading
+import os
+
+CACHE_DIR = "../tmp/finance_reports"
 
 
 # stock_financial_abstract_df = ak.stock_financial_abstract(stock="300725")
@@ -15,8 +18,13 @@ def convert_float(value):
         return 0
 
 
-def financial_info(stock_code) -> pd.DataFrame:
-    stock_financial_analysis_indicator_df = ak.stock_financial_analysis_indicator(stock=stock_code)
+def finance_info(stock_code) -> pd.DataFrame:
+    data_file = os.path.join(CACHE_DIR, stock_code + '.csv')
+    try:
+        stock_financial_analysis_indicator_df = pd.read_csv(data_file, index_col=0)
+    except FileNotFoundError:
+        stock_financial_analysis_indicator_df = ak.stock_financial_analysis_indicator(stock=stock_code)
+        stock_financial_analysis_indicator_df.to_csv(data_file)
     stock_financial_analysis_indicator_df.index = pd.to_datetime(stock_financial_analysis_indicator_df.index)
     stock_financial_analysis_indicator_df['净资产报酬率(%)'] = stock_financial_analysis_indicator_df['净资产报酬率(%)'].apply(
         convert_float)
@@ -35,10 +43,15 @@ def financial_info(stock_code) -> pd.DataFrame:
     return stock_financial_analysis_indicator_df
 
 
-def save_financial_reports(classify_index_code):
+def save_finance_reports(classify_index_code):
     sw_index_df = ak.sw_index_cons(index_code=classify_index_code)
     for index, stock in sw_index_df.iterrows():
-        financial_info(stock['stock_code']).to_excel('../tmp/financial_reports/' + stock['stock_code'] + '.xlsx')
+        try:
+            finance_info(stock['stock_code'])
+        except Exception:
+            f = open('../tmp/errors/finance.txt', 'a')
+            f.write(stock['stock_code']+'\n')
+            f.close()
 
 
 if __name__ == '__main__':
@@ -48,8 +61,8 @@ if __name__ == '__main__':
     # financial_300725.plot.bar(use_index=False, y=['净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)'])
     # plt.show()
 
-    save_financial_reports(classify_index_code="801150")
-
+    save_finance_reports(classify_index_code="801150")
+    # print(finance_info("605369"))
     # import akshare as ak
     # sw_index_df = ak.sw_index_cons(index_code="801150")
 
