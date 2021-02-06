@@ -9,15 +9,15 @@ from utils.config import project_dir
 CACHE_DIR = "../tmp/finance_reports"
 
 
-def cache_dir():
+def cache_dir() -> str:
     return os.path.join(os.path.join(project_dir(), 'tmp', 'finance_reports'))
 
 
-def error_file_dir():
+def error_file_dir() -> str:
     return os.path.join(os.path.join(project_dir(), 'tmp', 'errors', 'finance.txt'))
 
 
-def convert_float(value):
+def convert_float(value) -> float:
     try:
         return float(value)
     except Exception:
@@ -104,6 +104,3 @@ if __name__ == '__main__':
 
     for index, row in sw_index_spot_df.iterrows():
         save_finance_reports(classify_index_code=row['指数代码'])
-
-    print(error_file_dir())
-

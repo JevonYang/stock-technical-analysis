@@ -18,10 +18,10 @@ def price_trend(
     return pd.merge(stock_zh_a_daily_qfq_df, stock_a_indicator_df, how='left', on=['date'])
 
 
-def se_type(stock_code: str):
+def se_type(stock_code: str) -> str:
     if stock_code.startswith("6"):
         return "sh" + stock_code
-    elif stock_code.startswith("0"):
+    elif stock_code.startswith("0") or stock_code.startswith("3"):
         return "sz" + stock_code
     else:
         return stock_code
