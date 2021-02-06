@@ -18,8 +18,25 @@ def price_trend(
     return pd.merge(stock_zh_a_daily_qfq_df, stock_a_indicator_df, how='left', on=['date'])
 
 
-if __name__ == '__main__':
-    result = price_trend(stock_code="sz300725")
+def se_type(stock_code: str):
+    if stock_code.startswith("6"):
+        return "sh" + stock_code
+    elif stock_code.startswith("0"):
+        return "sz" + stock_code
+    else:
+        return stock_code
+
+
+def price_trend_plot(
+        stock_code,
+        start="20100101",
+        end=datetime.datetime.now().strftime("%Y%m%d")
+) -> pd.DataFrame:
+    result = price_trend(stock_code=stock_code, start=start, end=end)
     print(result.columns)
     result.plot(use_index=True, x='date', y=['close', 'pe', 'pb'], secondary_y=['pb'])
     plt.show()
+
+
+if __name__ == '__main__':
+    price_trend_plot(stock_code="sz000952")
