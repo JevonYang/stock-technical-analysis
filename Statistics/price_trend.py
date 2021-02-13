@@ -48,11 +48,13 @@ def price_trend_plot(
         end=datetime.datetime.now().strftime("%Y%m%d")
 ) -> pd.DataFrame:
     result = price_trend(stock_code=stock_code, start=start, end=end)
-    # print(result)
-    result.plot(use_index=True, x='date', y=['close', 'pe', 'total_mv'], secondary_y=['total_mv'])
+    print(result.columns)
+    result.plot(use_index=True, y=['close', 'pe', 'total_mv'], secondary_y=['total_mv'])
     plt.show()
 
 
 if __name__ == '__main__':
-    # price_trend_plot(stock_code="sz000950")
-    print(price_trend(stock_code="sz300725"))
+    price_trend_plot(stock_code="sz300725")
+    # df = price_trend(stock_code="sz300725")
+    # print(df.iloc[0])
+    # print(df.iloc[-1])
