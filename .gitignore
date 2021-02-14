@@ -35,6 +35,7 @@ tmp/
 # Data files
 *.xls
 *.csv
+*.xlsx
 
 # Installer logs
 pip-log.txt
