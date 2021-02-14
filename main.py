@@ -26,7 +26,7 @@ def classify_index_financial(index_code: str):
 
     # index_code: str = "801150"
     sw_index_df = ak.sw_index_cons(index_code=index_code)
-    result.to_csv("./" + index_code + "roe.csv")
+    # result.to_csv("./" + index_code + "roe.csv")
     for _, stock in sw_index_df.iterrows():
         roe_5_years = finance_info(stock_code=stock['stock_code'])[lambda x: x.index.month == 12][
             '净资产报酬率(%)'].head(5)
@@ -39,7 +39,7 @@ def classify_index_financial(index_code: str):
         print(item)
         # result.append(item, ignore_index=True).to_csv("./" + index_code + "roe.csv", mode='a', header=False)
         result = result.append(item, ignore_index=True)
-
+    result.to_csv("./" + index_code + "roe.csv")
     return result
 
 
@@ -74,30 +74,49 @@ def classify_index_financial(index_code: str):
 26  801880    汽车
 27  801890  机械设备
 """
+
+
+def classify_index_financial_describe():
+    sw_index_spot_df = ak.sw_index_spot()
+    for index, row in sw_index_spot_df.iterrows():
+        classify_item = classify_index_financial(index_code=row['指数代码'])
+        describe_classify_index = classify_item.describe()[['total_mv', 'cagr']]
+        describe_classify_index.to_csv('./' + row['指数代码'] + 'describe' + '.csv')
+
+
+def classify_index_financial_conclusion():
+    global sw_index_spot_df, index, row
+    classify_index_financial_describe()
+    result = pd.DataFrame()
+    sw_index_spot_df = ak.sw_index_spot()
+    for index, row in sw_index_spot_df.iterrows():
+        df = pd.read_csv('./' + row['指数代码'] + 'describe.csv', index_col=0)
+        index_name = row['指数名称']
+        item = {
+            'index_name': index_name,
+            'index_code': row['指数代码'],
+            'total_mv_25%': df['total_mv']['25%'],
+            'total_mv_mean': df['total_mv']['mean'],
+            'total_mv_75%': df['total_mv']['75%'],
+            'cagr_25%': df['cagr']['25%'],
+            'cagr_mean': df['cagr']['mean'],
+            'cagr_75%': df['cagr']['75%']
+        }
+        result = result.append(item, ignore_index=True)
+    result.to_excel("./classify_financial_conclusion.xlsx")
+    import matplotlib.pyplot as plt
+    result.plot.bar(x='index_name', y=['total_mv_mean', 'cagr_mean'], secondary_y='cagr_mean')
+    # plt.legend()
+    plt.show()
+
+
 if __name__ == '__main__':
     start_time = time.process_time()
 
-    # df = pd.read_csv('801150roe.csv', error_bad_lines=False)
-    # print(df.describe())
-    # df.sort_values(by='cagr', ascending=False).reset_index().to_csv("./医药roe.csv")
-
-    # sw_index_spot_df = ak.sw_index_spot()
-    #
-    # for index, row in sw_index_spot_df.iterrows():
-    #     classify_item = classify_index_financial(index_code=row['指数代码'])
-    #     describe_classify_index = classify_item.describe()[['total_mv', 'cagr']]
-    #     describe_classify_index.to_csv('./' + row['指数代码'] + 'describe' + '.csv')
-
-    classify_item = classify_index_financial(index_code='801890')
-    describe_classify_index = classify_item.describe()[['total_mv', 'cagr']]
-    describe_classify_index.to_csv('./' + '801890' + 'describe' + '.csv')
-
     # classify_index_financial(index_code="801080")
-    # classify_index_financial(index_code="801150")
-    # classify_index_financial(index_code="801740")
-    # print(roe_result)
-    # roe_result.reset_index().to_excel("./" + index_code + "roe.xls")
-    # price_trend_plot(stock_code="sh600129", start="20180101")
+
+    classify_index_financial_describe()
+    classify_index_financial_conclusion()
 
     stop_time = time.process_time()
     cost = stop_time - start_time
