@@ -1,22 +1,24 @@
-import pandas as pd
+import time
+
 import matplotlib.pyplot as plt
-import tushare as ts
 import numpy as np
+import pandas as pd
+import tushare as ts
+
 from utils import config
 import time
 
 if __name__ == '__main__':
-    code = '600498.SH'  # sh
+    code = '300725.SZ'  # sh
     ts.set_token(config.tushare_token())
     now = time.strftime('%Y%m%d')
-    df = ts.pro_bar(ts_code=code, adj='qfq', start_date='20160101')  # , end_date=now
-
+    df = ts.pro_bar(ts_code=code, adj='qfq', start_date='20160101', end_date=now)
     # df = ts.get_hist_data(code, start='2010-01-01', ktype='D')
     df.to_csv('../tmp/' + code + '.csv', index=True, sep=',')
     df = pd.read_csv('../tmp/' + code + '.csv', encoding='GBK')
     df.set_index(pd.to_datetime(df["trade_date"], format='%Y%m%d'), inplace=True)
     print(df)
-    df = df['2020':'2010']
+    df = df['2021':'2010']
     print(df)
     a1 = [np.percentile(df['close'], 10)] * len(df)
     a2 = [np.percentile(df['close'], 90)] * len(df)

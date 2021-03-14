@@ -31,6 +31,7 @@ def finance_info(stock_code) -> pd.DataFrame:
     except FileNotFoundError:
         stock_financial_analysis_indicator_df = ak.stock_financial_analysis_indicator(stock=stock_code)
         stock_financial_analysis_indicator_df.to_csv(data_file)
+
     stock_financial_analysis_indicator_df.index = pd.to_datetime(stock_financial_analysis_indicator_df.index)
     stock_financial_analysis_indicator_df['净资产报酬率(%)'] = stock_financial_analysis_indicator_df['净资产报酬率(%)'].apply(
         convert_float)
@@ -52,7 +53,7 @@ def finance_info(stock_code) -> pd.DataFrame:
 def financial_info_plot(stock_code, y=None):
     if y is None:
         y = ['净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)']
-    finance_info(stock_code=stock_code)[lambda x: x.index.month == 12].plot.bar(use_index=False, y=y)
+    finance_info(stock_code=stock_code)[lambda x: x.index.month == 12].head(5).plot.bar(use_index=True, y=y)
     plt.show()
 
 
@@ -100,7 +101,30 @@ def save_finance_reports(classify_index_code):
 """
 
 if __name__ == '__main__':
-    sw_index_spot_df = ak.sw_index_spot()
+    df = finance_info(stock_code="600760")
+    df['date'] = df.index
+    # print(df[lambda x: x.index.month == 12].head(5)['净资产收益率(%)'])
+    # print(df[lambda x: x.index.month == 12].head(5)['资产报酬率(%)'])
+    # print(df[lambda x: x.index.month == 12].head(5)['净资产增长率(%)'])
+    # print(df[lambda x: x.index.month == 12].head(5)['总资产增长率(%)'])
+    # df = df[['净资产报酬率(%)']]
+    # print(df)
+    # df[lambda x: x.index.month == 12].head(5).plot.bar(use_index=True)
+    # plt.show()
+    import seaborn as sns
 
-    for index, row in sw_index_spot_df.iterrows():
-        save_finance_reports(classify_index_code=row['指数代码'])
+    df = df[lambda x: x.index.month == 12].head(5)[['date', '净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)']]
+
+    df.reset_index(drop=True, inplace=True)
+    print(df)
+
+    df.plot.bar(use_index=False, x="date", y=['净资产报酬率(%)', '资产报酬率(%)', '净资产增长率(%)', '总资产增长率(%)'])
+
+    # ax = sns.lineplot(x="date", y="净资产报酬率(%)", data=df)
+    plt.show()
+    # ax.show()
+
+    # sw_index_spot_df = ak.sw_index_spot()
+    #
+    # for index, row in sw_index_spot_df.iterrows():
+    #     save_finance_reports(classify_index_code=row['指数代码'])
